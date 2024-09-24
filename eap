@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Devine le rappeur</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="game">
+        <h1>Devine le rappeur</h1>
+        <div id="hint"></div>
+        <input type="text" id="rapper-name" placeholder="Entrez le nom du rappeur" />
+        <div class="button-container">
+            <button onclick="checkAnswer()">Valider</button>
+            <button onclick="nextRapper()">Passer</button>
+            <button onclick="showHint(1)">Indice 2</button>
+            <button onclick="showHint(2)">Indice 3</button>
+        </div>
+        <div id="result"></div>
+        <div id="current-score">Score actuel : 0</div>
+        <div id="scores"></div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #ffeef8;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+#game {
+    max-width: 600px;
+    margin: 20px;
+    padding: 20px;
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    border: 2px solid #d81b60;
+}
+
+h1 {
+    color: #d5006d;
+    font-size: 2.5em;
+    margin-bottom: 20px;
+}
+
+#hint {
+    font-size: 1.5em;
+    color: #c2185b;
+    margin: 10px 0;
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    border: 2px solid #d5006d;
+    border-radius: 5px;
+    font-size: 1em;
+}
+
+.button-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+button {
+    padding: 12px;
+    width: 30%;
+    border: none;
+    border-radius: 5px;
+    background-color: #d5006d;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 1.2em;
+}
+
+button:hover {
+    background-color: #c51162;
+}
+
+#result {
+    margin-top: 10px;
+    font-weight: bold;
+    color: #388e3c;
+}
+
+#current-score, #scores {
+    margin-top: 20px;
+    font-size: 1.5em;
+    color: #555;
+}
+const rappers = [
+    {
+        name: "Nekfeu",
+        hints: [
+            "Premier indice (titre) : 'koala mouillé'.",
+            "Deuxième indice (ville) : 'Paris'.",
+            "Troisième indice (son le plus connu) : 'princesse'."
+        ]
+    },
+    {
+        name: "Orelsan",
+        hints: [
+            "Premier indice (titre) : '50 pourcent'.",
+            "Deuxième indice (ville) : 'Caen'.",
+            "Troisième indice (son connu) : 'basique'."
+        ]
+    },
+    {
+        name: "Kaaris",
+        hints: [
+            "Premier indice (titre) : 'bouchon de liege'.",
+            "Deuxième indice (ville) : 'Sevran'.",
+            "Troisième indice (son connu) : 'kalash'."
+        ]
+    },
+    {
+        name: "Lomepal",
+        hints: [
+            "Premier indice (titre) : 'Trop beau'.",
+            "Deuxième indice (ville) : 'Paris'.",
+            "Troisième indice (son connu) : 'yeux disent'."
+        ]
+    },
+    {
+        name: "Damso",
+        hints: [
+            "Premier indice (titre) : 'Nwaar is the new black''.",
+            "Deuxième indice (ville) : 'bruxelles'.",
+            "Troisième indice (son connu) : 'macarena."
+        ]
+    },
+    {
+        name: "Jul",
+        hints: [
+            "Premier indice (titre) : 'j'oublie tout'.",
+            "Deuxième indice (ville) : 'Marseille'.",
+            "Troisième indice (son connu) : 'tchikita'."
+        ]
+    },
+    {
+        name: "SCH",
+        hints: [
+            "Premier indice (titre) : 'Champs-Élysées'.",
+            "Deuxième indice (ville) : 'Marseille'.",
+            "Troisième indice (son connu) : 'A7'."
+        ]
+    },
+    {
+        name: "Soprano",
+        hints: [
+            "Premier indice (titre) : 'clown'.",
+            "Deuxième indice (ville) : 'Marseille'.",
+            "Troisième indice (son connu) : 'fresh prince'."
+        ]
+    },
+    {
+        name: "Dalida",
+        hints: [
+            "Premier indice (titre) : 'love in portofino'.",
+            "Deuxième indice (ville) : 'Paris'.",
+            "Troisième indice (son connu) : 'bambino'."
+        ]
+    },
+    {
+        name: "Ninho",
+        hints: [
+            "Premier indice (titre) : 'de l'autre coté.",
+            "Deuxième indice (ville) : 'essone'.",
+            "Troisième indice (son connu) : 'M.I.L.S'."
+        ]
+    },
+    {
+        name: "Vald",
+        hints: [
+            "Premier indice (titre) : 'bonjour'.",
+            "Deuxième indice (ville) : 'Aulnay-sous-Bois'.",
+            "Troisième indice (son connu) : 'desacordé'."
+        ]
+    },
+    {
+        name: "Rim'K",
+        hints: [
+            "Premier indice (titre) : 'cellophané'.",
+            "Deuxième indice (ville) : 'Vitry sur seine'.",
+            "Troisième indice (son connu) : 'air max'."
+        ]
+    },
+    {
+        name: "Naps",
+        hints: [
+            "Premier indice (titre) : 'la cuenta'.",
+            "Deuxième indice (ville) : 'marseille'.",
+            "Troisième indice (son connu) : 'la kiffance'."
+        ]
+    },
+    {
+        name: "josman",
+        hints: [
+            "Premier indice (titre) : 'bbl'.",
+            "Deuxième indice (ville) : 'Vierzon'.",
+            "Troisième indice (son connu) : 'j'aime bien."
+        ]
+    },
+    {
+        name: "levelsantana",
+        hints: [
+            "Premier indice (titre) : 'drill fr 6'.",
+            "Deuxième indice (ville) : 'negresco lol'.",
+            "Troisième indice (son connu) : 'tranquille'."
+        ]
+    }
+];
+
+// Mélange aléatoire des rappeurs
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+}
+
+let currentRapperIndex = 0;
+let score = 0;
+
+shuffleArray(rappers); // Mélanger les rappeurs au début
+
+function displayHint() {
+    if (currentRapperIndex < rappers.length) {
+        document.getElementById('hint').innerText = rappers[currentRapperIndex].hints[0]; // Affiche le premier indice
+        document.getElementById('result').innerText = ""; // Réinitialiser le message
+        document.getElementById('rapper-name').value = ""; // Réinitialiser le champ de réponse
+    }
+}
+
+function checkAnswer() {
+    const userAnswer = document.getElementById('rapper-name').value.trim().toLowerCase();
+    const correctAnswer = rappers[currentRapperIndex].name.toLowerCase();
+
+    if (userAnswer === correctAnswer) {
+        document.getElementById('result').innerHTML = "<span style='color: #D5006D; font-size: 24px;'>Bravo ma pepette! 🎉🎊</span>";
+        document.body.style.backgroundImage = "url('confetti.gif')"; // URL de l'animation de confetti
+        score += 10; // 10 points pour une bonne réponse
+        document.getElementById('current-score').innerText = "Score actuel : " + score;
+        nextRapper();
+    } else {
+        document.getElementById('result').innerHTML = "<span style='color: red; font-size: 24px;'>Boouuh trop nulle frr</span>";
+        nextRapper(); // Passer au prochain rappeur même en cas de mauvaise réponse
+    }
+}
+
+function nextRapper() {
+    currentRapperIndex++;
+    
+    if (currentRapperIndex < rappers.length) {
+        setTimeout(() => {
+            document.body.style.backgroundImage = ""; // Reset background
+            displayHint();
+        }, 1000); // Attendre 1 secondes avant de passer au prochain rappeur
+    } else {
+        endGame(); // Fin du jeu seulement si tous les rappeurs ont été devinés
+    }
+}
+
+function showHint(index) {
+    if (index < rappers[currentRapperIndex].hints.length) {
+        document.getElementById('hint').innerText = rappers[currentRapperIndex].hints[index];
+    }
+}
+
+function endGame() {
+    alert("Jeu terminé ! Votre score est : " + score);
+    resetGame();
+}
+
+function resetGame() {
+    currentRapperIndex = 0;
+    score = 0;
+    document.getElementById('current-score').innerText = "Score actuel : 0";
+    document.body.style.backgroundImage = ""; // Reset background
+    shuffleArray(rappers); // Mélange à nouveau les rappeurs
+    displayHint();
+}
+
+// Affiche le premier indice dès le chargement
+displayHint();
